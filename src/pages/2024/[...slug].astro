@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import ToolBarContained from '../../layouts/ToolBarContained.astro';
+import Page from '../../layouts/Page.astro';
+import TextPage from '../../layouts/TextPage.astro';
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+	const blogEntries = await getCollection('pages2024');
+	return blogEntries.map((entry) => ({
+		params: { slug: entry.slug },
+		props: { entry }
+	}));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<ToolBarContained title={entry.data.title} next={entry.data.next} prev={entry.data.prev} number={entry.data.number} description={entry.data.description} authors={entry.data.authors} showCredits={entry.data.show_credits}>
+	{entry.data.img ? <Page img={entry.data.img}/> : <TextPage />}
+</ToolBarContained>

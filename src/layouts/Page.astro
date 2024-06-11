@@ -1,0 +1,10 @@
+---
+const { img, alt } = Astro.props;
+import 'zoomable-image/dist/style.css'
+---
+
+<img
+	src={img}
+	{alt}
+	class="mb-8 rounded-lg bg-white lg:h-[calc(100vh-4rem)]"
+/>
