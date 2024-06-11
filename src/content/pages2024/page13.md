@@ -1,9 +1,9 @@
 ---
-title: 'Frontmatter'
+title: 'Page Thirteen'
 slug: '13'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - anonymous
+  - khadjiatul-kubra
 prev: '12'
 next: '14'
 number: 13

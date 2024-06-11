@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Fourteen'
 slug: '14'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - piper-koury
 prev: '13'
 next: '15'
 number: 14

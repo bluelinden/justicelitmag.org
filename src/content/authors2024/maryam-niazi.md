@@ -1,5 +1,6 @@
 ---
 name: "Maryam Niazi"
-pages: 
-  - "4"
+works: 
+  "4":
+    - "\"The Mystic\""
 ---

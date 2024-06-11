@@ -1,5 +1,8 @@
 ---
 name: "Roselyn Lobo Lemus"
-pages: 
-  - "3"
+works: 
+  "3": 
+    - "My Mother"
+  "8":
+    - "Dove"
 ---

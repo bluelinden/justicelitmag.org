@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Five'
 slug: '5'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - tyler-crockett
 prev: '4'
 next: '6'
 number: 5

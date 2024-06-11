@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Eighteen'
 slug: '18'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - tra-my-nguyen
 prev: '17'
 next: '19'
 number: 18

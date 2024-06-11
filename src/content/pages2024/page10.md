@@ -1,9 +1,9 @@
 ---
-title: 'Frontmatter'
+title: 'Page Ten'
 slug: '10'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - zuleima-argueta-soto
+  - ferdausy-hossain
 prev: '9'
 next: '11'
 number: 10

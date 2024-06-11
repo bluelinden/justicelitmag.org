@@ -1,9 +1,9 @@
 ---
-title: 'Frontmatter'
+title: 'Page Eight'
 slug: '8'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - roselyn-lobo-lemus
+  - khadjiatul-kubra
 prev: '7'
 next: '9'
 number: 8

@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Six'
 slug: '6'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - natalia-l-larin
 prev: '5'
 next: '7'
 number: 6

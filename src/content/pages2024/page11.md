@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Eleven'
 slug: '11'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - sherlin-hernandez-rivera
 prev: '10'
 next: '12'
 number: 11

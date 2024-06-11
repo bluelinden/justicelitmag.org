@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Fifteen'
 slug: '15'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - jocelyn-nunez
 prev: '14'
 next: '16'
 number: 15

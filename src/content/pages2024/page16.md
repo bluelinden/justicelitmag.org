@@ -1,9 +1,10 @@
 ---
-title: 'Frontmatter'
+title: 'Page Sixteen'
 slug: '16'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - blue-linden
+  - zuleima-argueta-soto
+  - camila-churata
 prev: '15'
 next: '17'
 number: 16

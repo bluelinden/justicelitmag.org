@@ -1,5 +1,6 @@
 ---
 name: "Ariela Ventura"
-pages: 
-  - "1"
+works: 
+  "1":
+    - "An Artistic Statement of Belief"
 ---

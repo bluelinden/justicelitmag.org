@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Nineteen'
 slug: '19'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - tyler-crockett
 prev: '18'
 next: '20'
 number: 19

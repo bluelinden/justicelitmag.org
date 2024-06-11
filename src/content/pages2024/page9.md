@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Nine'
 slug: '9'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - bisma-aftab
 prev: '8'
 next: '10'
 number: 9

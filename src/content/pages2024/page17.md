@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Seventeen'
 slug: '17'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - tyler-crockett
 prev: '16'
 next: '18'
 number: 17

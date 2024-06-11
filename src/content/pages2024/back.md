@@ -6,4 +6,5 @@ authors:
 prev: '20'
 number: 21
 img: /imgs/2024/back.svg
+show_credits: true
 ---

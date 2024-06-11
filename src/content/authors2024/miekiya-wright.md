@@ -1,5 +1,6 @@
 ---
 name: "Miekiya Wright"
-pages: 
-  - "3"
+works: 
+  "3":
+    - "Galaxy Dragon"
 ---

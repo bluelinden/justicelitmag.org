@@ -1,5 +1,5 @@
 ---
-title: ''
+title: 'Page Three'
 slug: '3'
 authors:
   - roselyn-lobo-lemus

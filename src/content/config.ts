@@ -18,7 +18,7 @@ const authors2024 = defineCollection({
 	type: 'content',
 	schema: z.object({
 		name: z.string(),
-		pages: z.array(reference('pages2024'))
+		works: z.record(reference('pages2024'), z.string().array().optional())
 	})
 });
 

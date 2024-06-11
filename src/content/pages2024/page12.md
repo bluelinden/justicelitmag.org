@@ -1,9 +1,8 @@
 ---
-title: 'Frontmatter'
+title: 'Page Twelve'
 slug: '12'
 authors:
-  - sofi-hemmens
-  - ariela-ventura
+  - bisma-aftab
 prev: '11'
 next: '13'
 number: 12
