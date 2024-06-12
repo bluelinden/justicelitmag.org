@@ -1,6 +1,10 @@
 ---
-name: "Natalia L. Larin"
-works: 
-  "6":
-    - "Dancer"
+{
+  "name": "Natalia L. Larin",
+  "works": {
+    "6": [
+      "Dancer"
+    ]
+  }
+}
 ---

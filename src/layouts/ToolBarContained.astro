@@ -1,33 +1,39 @@
 ---
-const { title, number, next, prev, contentsLink, downloadLink, description, authors, showCredits } =
+const { title, number, next, prev, slug, downloadLink, description, authors, showCredits } =
 	Astro.props;
 import { getEntries } from 'astro:content';
 import CondLink from '../components/CondButton.astro';
 import Layout from './Layout.astro';
 
 const authorsData = (await getEntries(authors ?? [])) ?? [];
+
+authorsData.map((author) => {
+	console.log(Object.keys(author.data.works));
+});
 ---
 
-<Layout {title}>
+<Layout {slug} {title}>
 	<div class="flex h-[calc(100vh-4rem)] w-full flex-col gap-8 lg:flex-row">
 		<article class="imgcont w-full">
 			<slot class="w-full" />
 		</article>
 		<nav class="flex flex-col gap-2 lg:w-96">
 			<figure class="text-center">
-				<h1 class="mt-[-6rem] lg:mt-0 mb-[-2rem] text-[10rem]">{number}</h1>
+				<h1 class="mb-[-2rem] mt-[-6rem] text-[10rem] lg:mt-0">{number}</h1>
 				<h2 class="mb-6 text-xl lg:text-3xl">{title}</h2>
 			</figure>
 			<div class="flex flex-row gap-3">
 				<CondLink
 					class="justify-start rounded-xl rounded-tl-[2rem] text-2xl lg:text-4xl"
 					target={prev && `/2024/${prev.slug}`}
-					><span class="material-symbols-rounded text-2xl lg:text-4xl ">arrow_back</span>Back</CondLink
+					><span class="material-symbols-rounded text-2xl lg:text-4xl">arrow_back</span
+					>Back</CondLink
 				>
 				<CondLink
 					class="justify-end rounded-xl rounded-tr-[2rem] text-2xl lg:text-4xl"
 					target={next && `/2024/${next.slug}`}
-					>Next<span class="material-symbols-rounded text-2xl lg:text-4xl">arrow_forward</span></CondLink
+					>Next<span class="material-symbols-rounded text-2xl lg:text-4xl">arrow_forward</span
+					></CondLink
 				>
 			</div>
 			{
@@ -56,6 +62,13 @@ const authorsData = (await getEntries(authors ?? [])) ?? [];
 					</aside>
 				)
 			}
+			<CondLink
+				class="flex h-min flex-row rounded-xl rounded-b-[2rem] border-[6px] border-lmp-900 bg-lmp-100 p-4 text-2xl text-lmp-900 lg:text-4xl"
+				target={downloadLink}
+				><div>Download PDF</div><span class="material-symbols-rounded text-2xl lg:text-4xl"
+					>download</span
+				></CondLink
+			>
 		</nav>
 	</div>
 </Layout>

@@ -8,5 +8,6 @@ import astroFuse from 'astro-fuse';
 
 // https://astro.build/config
 export default defineConfig({
-	integrations: [tailwind(), devtoolBreadpoints(), astroFuse()]
+	integrations: [tailwind(), devtoolBreadpoints(), astroFuse()],
+	site: 'https://justicelitmag.org'
 });

@@ -1,6 +1,10 @@
 ---
-name: "Piper Koury"
-works: 
-  "14":
-    - "Amorphous"
+{
+  "name": "Piper Koury",
+  "works": {
+    "14": [
+      "Amorphous"
+    ]
+  }
+}
 ---

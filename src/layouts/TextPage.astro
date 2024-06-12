@@ -1,0 +1,21 @@
+<div
+	id="txttgt"
+	class="aspect-paper mb-8 rounded-lg bg-white p-8 lg:p-[4vh] lg:text-[1.6vh] text-black font-slab lg:h-[calc(100vh-4rem)]"
+>
+	<div class="p-4 border-ybk-blue border-4">
+		<slot />
+	</div>
+</div>
+
+<style is:global>
+	#txttgt h1 {
+		@apply text-ybk-pink text-3xl lg:text-[4vh] leading-[4vh] font-semibold;
+	}
+	#txttgt h2 {
+		@apply text-xl mb-6 font-light;
+	}
+
+	#txttgt img {
+		@apply lg:h-[70vh];
+	}
+</style>

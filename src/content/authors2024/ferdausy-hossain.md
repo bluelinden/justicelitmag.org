@@ -1,6 +1,10 @@
 ---
-name: "Ferdausy Hossain"
-works: 
-  "10":
-    - "The Royal Flush"
+{
+  "name": "Ferdausy Hossain",
+  "works": {
+    "10": [
+      "The Royal Flush"
+    ]
+  }
+}
 ---

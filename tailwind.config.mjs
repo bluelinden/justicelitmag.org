@@ -14,10 +14,18 @@ export default {
 				lmg: {
 					100: '#afd897',
 					900: '#0f432d'
+				},
+				ybk: {
+					blue: "#4fc6f4",
+					pink: "#f68aca"
 				}
 			},
 			fontFamily: {
-				serif: 'Young Serif'
+				serif: 'Young Serif',
+				slab: 'Rokkitt'
+			},
+			aspectRatio: {
+				paper: "2.977 / 4",
 			}
 		}
 	},
