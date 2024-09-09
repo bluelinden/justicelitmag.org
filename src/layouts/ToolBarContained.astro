@@ -39,8 +39,8 @@ authorsData.map((author) => {
 			{
 				showCredits && (
 					<aside class="rounded-xl border-[6px] border-lmp-900 bg-lmp-100 p-4 text-xl text-lmp-900">
-						Web design + programming by blue linden. Website made using Astro. Built on
-						{new Date().toDateString()}.
+						Web design + programming by blue linden. Website made using <a href="https://astro.build">Astro</a>. Built on
+						{new Date().toDateString()}. This website is open source on <a href="https://github.com/bluelinden/justicelitmag.org">GitHub</a>.
 					</aside>
 				)
 			}
@@ -63,11 +63,17 @@ authorsData.map((author) => {
 				)
 			}
 			<CondLink
-				class="flex h-min flex-row rounded-xl rounded-b-[2rem] border-[6px] border-lmp-900 bg-lmp-100 p-4 text-2xl text-lmp-900 lg:text-4xl"
+				class="flex h-min flex-row rounded-xl border-[6px] border-lmp-900 bg-lmp-100 p-4 text-2xl text-lmp-900 lg:text-3xl"
+				target="/2024/2"
+				><span class="material-symbols-rounded text-2xl lg:text-3xl"
+				>toc</span
+			><div>Table of Contents</div></CondLink
+			>
+			<CondLink
 				target={downloadLink}
-				><div>Download PDF</div><span class="material-symbols-rounded text-2xl lg:text-4xl"
-					>download</span
-				></CondLink
+				><span class="material-symbols-rounded text-2xl lg:text-3xl">download</span><div>
+					Download PDF
+				</div></CondLink
 			>
 		</nav>
 	</div>
