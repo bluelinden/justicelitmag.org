@@ -18,18 +18,18 @@ console.log(prev, next)
 		</article>
 		<nav class="flex flex-col gap-2 lg:w-96">
 			<figure class="text-center">
-				<h1 class="mb-[-2rem] mt-[-6rem] text-[10rem] lg:mt-0">{number}</h1>
+				<h1 class="-mb-8 -mt-24 text-[10rem] lg:mt-0">{number}</h1>
 				<h2 class="mb-6 text-xl lg:text-3xl">{title}</h2>
 			</figure>
 			<div class="flex flex-row gap-3">
 				<CondLink
-					class="justify-start rounded-xl rounded-tl-[2rem] text-2xl lg:text-4xl"
+					class="justify-start rounded-xl rounded-tl-4xl text-2xl lg:text-4xl"
 					target={prev && `/2024/${prev.id}`}
 					><span class="material-symbols-rounded text-2xl lg:text-4xl">arrow_back</span
 					>Back</CondLink
 				>
 				<CondLink
-					class="justify-end rounded-xl rounded-tr-[2rem] text-2xl lg:text-4xl"
+					class="justify-end rounded-xl rounded-tr-4xl text-2xl lg:text-4xl"
 					target={next && `/2024/${next.id}`}
 					>Next<span class="material-symbols-rounded text-2xl lg:text-4xl">arrow_forward</span
 					></CondLink
@@ -78,7 +78,7 @@ console.log(prev, next)
 				</div></CondLink
 			>
 			<CondLink
-				class="flex h-min flex-row rounded-xl rounded-b-[2rem] border-[6px] border-lmp-900 bg-lmp-100 p-4 text-2xl text-lmp-900 lg:text-3xl"
+				class="flex h-min flex-row rounded-xl rounded-b-4xl border-[6px] border-lmp-900 bg-lmp-100 p-4 text-2xl text-lmp-900 lg:text-3xl"
 				target={downloadLink}
 				><span class="material-symbols-rounded text-2xl lg:text-3xl">download</span><div>
 					Download PDF

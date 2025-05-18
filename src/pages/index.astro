@@ -6,21 +6,26 @@ import { Image } from 'astro:assets';
 
 <Layout title="The Justice Lit Mag">
 	<main class="h-screen w-screen grid grid-cols-3 grid-rows-4 gap-8 p-8 overflow-hidden relative">
-		<article
+		<a
 			id="2025"
 			class="col-start-1 col-end-3 row-start-1 row-end-5 overflow-hidden relative content-center"
+			href="2025/cover"
 		>
 			<img
 				class="w-full filter brightness-150 saturate-150 absolute -z-10 top-0"
 				src="/seo/2025-sizzle.png"
 			/>
-			<div class="my-auto text-center font-sans font-black text-black p-4 text-shadow-white">
+			<div
+				class="my-auto text-center font-sans font-black text-black p-4 text-shadow-[0_0_60px_rgb(255_255_255_/_1)]"
+			>
 				<h1 class="text-9xl">Read the 2025 Justice Lit Mag</h1>
 			</div>
-		</article>
-		<article
+		</a>
+		<a
 			id="2024"
 			class="lg:col-start-3 col-end-4 row-start-1 row-end-5 overflow-hidden relative content-center"
+			href="2024/cover"
+			
 		>
 			<img
 				class="h-full w-full filter brightness-75 absolute -z-10 top-0"
@@ -29,6 +34,6 @@ import { Image } from 'astro:assets';
 			<div class="my-auto text-center flex-col flex gap-4 p-4">
 				<h1 class="text-7xl leading-tight">Read last year's Justice Lit Mag</h1>
 			</div>
-		</article>
+		</a>
 	</main>
 </Layout>

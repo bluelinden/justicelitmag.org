@@ -364,7 +364,7 @@ const onboarding = useVOnboarding(wrapper);
 				<IconBookRounded slot="icon" />
 			</md-fab>
 		</Transition>
-		<md-snackbar id="findAPageSnackbar" timeout="5000" class="absolute right-6 bottom-24 z-[100]">
+		<md-snackbar id="findAPageSnackbar" timeout="5000" class="absolute right-6 bottom-24 z-100">
 			<span class="flex flex-row items-center gap-2">
 				Click the
 				<md-filled-tonal-button
