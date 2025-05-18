@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import ToolBarContained from '../../../layouts/ToolBarContained.astro';
+import ImgPage from '../../../layouts/ImgPage.astro';
+import TextPage from '../../../layouts/TextPage.astro';
+import ProfilePage from '../../../layouts/ProfilePage.astro';
+import type { InferGetStaticParamsType, InferGetStaticPropsType, GetStaticPaths } from 'astro';
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+	const authorEntries = await getCollection('authors2024');
+	return authorEntries.map((entry) => {
+	    console.log(entry.data)
+		return {
+			params: { id: entry.id },
+			props: { entry }
+		};
+	});
+}
+
+export type PathProps = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ProfilePage
+	name={entry.data.name}
+	works={entry.data.works}
+	slug3={entry.id}
+	position={entry.data['editorial-position']}
+/>

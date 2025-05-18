@@ -16,16 +16,18 @@ export default {
 					900: '#0f432d'
 				},
 				ybk: {
-					blue: "#4fc6f4",
-					pink: "#f68aca"
+					blue: '#4fc6f4',
+					pink: '#f68aca'
 				}
 			},
 			fontFamily: {
 				serif: 'Young Serif',
-				slab: 'Rokkitt'
+				slab: 'Rokkitt',
+				sans: 'Figtree'
 			},
 			aspectRatio: {
-				paper: "2.977 / 4",
+				paper: '2.977 / 4',
+				2025: '6 / 9'
 			}
 		}
 	},

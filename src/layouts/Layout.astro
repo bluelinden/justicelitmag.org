@@ -1,7 +1,9 @@
 ---
-import { ViewTransitions, fade } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import { SEO } from 'astro-seo';
-import getAuthorsForPage from '../finder';
+// import '@fontsource/figtree';
+// import '@fontsource/rokkitt';
+import '@fontsource/young-serif';
 
 interface Props {
 	title: string;
@@ -9,26 +11,10 @@ interface Props {
 }
 
 const { title, slug } = Astro.props;
-
-const authors = slug ? await getAuthorsForPage(slug) : [];
-
-/* BEGIN CHATGPT NOT-MY-FAULT ZONE */
-function formatList(arr: Array<any>) {
-	if (arr.length === 0) {
-		return '';
-	} else if (arr.length === 1) {
-		return arr[0];
-	} else if (arr.length === 2) {
-		return arr.join(' and ');
-	} else {
-		return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
-	}
-}
-/* END CHATGPT NOT-MY-FAULT ZONE */
 ---
 
 <!doctype html>
-<html lang="en" class="min-h-screen bg-lmp-100 font-serif text-lmp-900">
+<html lang="en" class="min-h-screen bg-lmp-100 font-serif text-lmp-900 max-w-screen mr-0">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
@@ -37,34 +23,31 @@ function formatList(arr: Array<any>) {
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<script
+		<!-- <script
 			defer
 			data-domain="justicelitmag.org"
-			src="https://analytics.bluelinden.art/js/script.js"></script>
+			src="https://analytics.bluelinden.art/js/script.js"></script> -->
 
-		<link
-			href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Rokkitt:ital,wght@0,100..900;1,100..900&display=swap"
-			rel="stylesheet"
-		/>
 		<link
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,700,0,0"
 		/>
-		<ViewTransitions />
+
+		<ClientRouter />
 		<SEO
 			{title}
 			titleTemplate={'%s - Justice Lit Mag'}
 			charset="UTF-8"
 			openGraph={{
 				basic: {
-					title: 'The Justice Literary Magazine',
+					title: 'The Justice Literature and Arts Magazine',
 					type: 'website',
 					image: '/seo/litmag-2024a-refresh.jpg'
 				}
 			}}
 		/>
 	</head>
-	<body class="min-h-screen p-8" transition:animate={fade({ duration: '0.1s' })}>
+	<body class="min-h-screen transition-colors duration-500" transition:animate="fade" }>
 		<slot />
 	</body>
 </html>
