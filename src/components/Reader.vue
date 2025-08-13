@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { spreads2025Schema } from '../content.config';
+import type { spreads2025Schema, authors2025Schema, works2025Schema } from '../content.config';
 import { z } from 'zod';
 import {
 	themeFromImage,
@@ -18,13 +18,17 @@ import {
 	IconBookRounded
 } from '@iconify-prerendered/vue-material-symbols';
 import { MdDialog } from '@material/web/dialog/dialog.js';
-import { useVOnboarding, VOnboardingWrapper, type StepEntity } from 'v-onboarding';
 import 'v-onboarding/dist/style.css';
 import '@material/web/all.js';
 import '@maicol07/material-web-additions/snackbar/snackbar.js';
-import { useScreen } from 'vue-screen';
 
-const screen = useScreen();
+import { Search, type CollectionSearchResult } from 'astro-collection-search/self';
+
+import Highlighter from 'vue-highlight-words';
+
+import MagSettings from '../../content/settings2025.yaml';
+
+import { computedAsync } from '@vueuse/core';
 
 const props = defineProps<{
 	currentPage: number;
@@ -41,13 +45,50 @@ const props = defineProps<{
 			}
 		]
 	>;
+	authors: Array<
+		[
+			number,
+			{
+				id: string;
+				body?: string;
+				collection: 'authors2025';
+				rendered: any;
+				digest: string;
+				data: z.infer<typeof authors2025Schema>;
+			}
+		]
+	>;
+	works: Array<
+		[
+			number,
+			{
+				id: string;
+				body?: string;
+				collection: 'works2025';
+				rendered: any;
+				digest: string;
+				data: z.infer<typeof works2025Schema>;
+			}
+		]
+	>;
 	dev: boolean;
 }>();
+
+function debounce(func: () => any, timeout = 300) {
+	let timer: number;
+	return (...args: any[]) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			// @ts-expect-error
+			func.apply(this as unknown, args);
+		}, timeout);
+	};
+}
 
 // console.log(props.pages);
 
 import Flipbook from '@nmathar/flipbook-vue3';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, type ComputedRef } from 'vue';
 
 const allPages = props.pages
 	.map((page) => {
@@ -61,6 +102,10 @@ const allPages = props.pages
 		}
 		return 0;
 	});
+
+const allWorks = props.works.map((page) => {
+	return page[1];
+});
 
 const spreadIds = allPages.flatMap((page) => {
 	// console.log(page);
@@ -100,12 +145,16 @@ const currentPage = ref(props.currentPage);
 const targetPage = ref(props.currentPage);
 
 function getPageByNum(num: number) {
+	console.time('getpagebynum');
 	// console.log(`FlipNum: ${num}`);
-	return allPages.find((page) => {
+	const page = allPages.find((page) => {
 		// flip lib page numbers start at 1, litmag starts at 0.
 		//
+
 		return page.data.numL == num || page.data.numR == num;
 	});
+	console.timeEnd('getpagebynum');
+	return page;
 }
 
 const numOfPagesBefore1 = allPages.flatMap((page) => {
@@ -118,7 +167,7 @@ const numOfPagesBefore1 = allPages.flatMap((page) => {
 	});
 }).length;
 
-console.log(numOfPagesBefore1);
+// console.log(numOfPagesBefore1);
 
 function flipNumToPageNum(num: number) {
 	return num - numOfPagesBefore1;
@@ -130,16 +179,22 @@ function pageNumToFlipNum(num: number) {
 
 function getSlug(num: number) {
 	const data = getPageByNum(num);
-	console.info(
-		`FOUND SLUG: ${data?.id} for ${num} with numL ${data?.data.numL} and numR ${data?.data.numR}`
-	);
-	console.log(data);
+	// console.info(
+	// 	`FOUND SLUG: ${data?.id} for ${num} with numL ${data?.data.numL} and numR ${data?.data.numR}`
+	// );
+	// console.log(data);
 	return data?.id;
+}
+
+function getPageBySlug(slug: string) {
+	return allPages.find((page) => {
+		return slug === page.id;
+	});
 }
 
 const currentSlug = computed(() => {
 	const slug = getSlug(currentPage.value);
-	console.info(`got slug ${slug} for ${currentPage.value}`);
+	// console.info(`got slug ${slug} for ${currentPage.value}`);
 });
 
 const isDark = ref(true);
@@ -167,6 +222,7 @@ async function getTheme(slug: string) {
 }
 
 onMounted(async () => {
+	console.time('mount');
 	addEventListener('popstate', (event) => {
 		if (event.state.page) {
 			currentPage.value = event.state.page;
@@ -186,20 +242,36 @@ onMounted(async () => {
 			});
 		}, 300);
 	artistDialog = document.getElementById('artistDialog') as MdDialog;
-	onboarding.start();
+	searchDialog = document.getElementById('searchDialog') as MdDialog;
+	searchField = document.getElementById('search') as any;
+	searchResults = computedAsync(async () => {
+		console.log('val', searchString.value);
+		const results = (await Search(searchString.value)).map((res) => {
+			console.log('result', res);
+			return {
+				res,
+				just: getJustificationForSearchResult(res)
+			};
+		});
+		console.log('results', results);
+		return results;
+	}) as any;
+	console.timeEnd('mount');
 });
 
 async function pageTurnCallback(flipNum: number) {
+	console.time('pageturn');
+
 	const pageNum = flipNumToPageNum(flipNum);
 	currentPage.value = pageNum;
 
-	console.info('PUSHED STATE');
+	// console.info('PUSHED STATE');
 	const slug = getSlug(pageNum);
-	// setTimeout(async () => {
-	applyTheme((await getTheme(slug!)) as Theme, {
-		dark: isDark.value
-	});
-	// }, 300);
+	(async () => {
+		applyTheme((await getTheme(slug!)) as Theme, {
+			dark: isDark.value
+		});
+	})();
 
 	window.history.pushState(
 		{
@@ -208,27 +280,64 @@ async function pageTurnCallback(flipNum: number) {
 		'',
 		`/2025/${slug}`
 	);
+	console.timeEnd('pageturn');
+}
+
+function getWorksForCurrentPage() {
+	console.time('getworks');
+	const works = currentPageData.value?.data.works;
+	if (!works) return;
+	const foundWorks = works.map((neededWork) => {
+		const foundWork = allWorks.find((foundWork) => {
+			return neededWork.id === foundWork.id;
+		});
+		if (foundWork) {
+			console.timeEnd('getworks');
+			return foundWork;
+		}
+	});
+	if (
+		foundWorks.every((workToBeTested) => {
+			console.timeEnd('getworks');
+			return !!workToBeTested;
+		})
+	) {
+		console.timeEnd('getworks');
+		return foundWorks;
+	}
+}
+
+function getArtistsForWork() {
+	console.time('getartists');
+	const artists = currentPageData.value?.data.works;
+	if (!artists) return;
+	const foundArtists = artists.map((neededWork) => {
+		const foundArtist = artists.find((foundWork) => {
+			return neededWork.id === foundWork.id;
+		});
+		if (foundArtist) {
+			console.timeEnd('getworks');
+			return foundArtist;
+		}
+	});
+	if (
+		foundArtists.every((workToBeTested) => {
+			console.timeEnd('getworks');
+			return !!workToBeTested;
+		})
+	) {
+		console.timeEnd('getartists');
+		return foundArtists;
+	}
 }
 
 let artistDialog: MdDialog;
+let searchDialog: MdDialog;
 const zoomLevel = ref(1);
 
 function updateZoomLevel(lev: number) {
 	zoomLevel.value = lev;
 }
-
-function showGoToMenu() {
-	const menu = document.getElementById('findAPageMenu')!;
-	// @ts-expect-error
-	menu.open = !menu.open;
-}
-
-const onboardingSteps: StepEntity[] = [
-	{
-		attachTo: { element: '#nav' },
-		content: { title: 'Welcome!' }
-	}
-];
 
 function showTableOfContents() {
 	targetPage.value = 1;
@@ -240,14 +349,63 @@ watch(currentPage, (newValue, oldValue) => {
 		// @ts-expect-error
 		document.getElementById('findAPageSnackbar').show();
 	} else {
-		console.info(`snackbar skipped, nv ${newValue} ov ${oldValue}`);
+		// console.info(`snackbar skipped, nv ${newValue} ov ${oldValue}`);
 	}
 });
 
-// ONBOARDING
+const flipStartPage = pageNumToFlipNum(targetPage.value);
 
-const wrapper = ref(null);
-const onboarding = useVOnboarding(wrapper);
+let searchField: HTMLElement;
+
+function updateSearchString() {
+	// @ts-expect-error
+	searchString.value = searchField.value;
+}
+
+function filenameToSlug(fname: string) {
+	return fname.split('.')[0];
+}
+
+const searchString = ref('');
+
+export type Result = {
+	res: CollectionSearchResult;
+	just: ReturnType<typeof getJustificationForSearchResult>;
+};
+let searchResults: ComputedRef<Result[]>;
+
+function getPageForSearchResult(res: CollectionSearchResult) {}
+function getJustificationForSearchResult(res: CollectionSearchResult) {
+	console.log('just4', res);
+	const matchRzns = Object.values(res.match).flat();
+	console.log('matchrzns', res.queryTerms, matchRzns);
+
+	if (
+		matchRzns.includes('numL') ||
+		matchRzns.includes('numR') ||
+		matchRzns.includes('name') ||
+		matchRzns.includes('title')
+	) {
+		console.log('nojust');
+
+		return;
+	} else if (matchRzns.includes('body')) {
+		console.log('body', res);
+
+		// console.time('just');
+		const just = {
+			bold: Object.keys(res.match),
+			text: getPageBySlug(filenameToSlug(res.filename))!.body!
+		};
+		// console.timeEnd('just');
+
+		console.log('just', just);
+		return just;
+	} else {
+		console.log('nojust', res);
+		return;
+	}
+}
 </script>
 
 <template>
@@ -261,7 +419,7 @@ const onboarding = useVOnboarding(wrapper);
 		:click-to-zoom="false"
 		:drag-to-flip="true"
 		:flip-duration="700"
-		:start-page="pageNumToFlipNum(targetPage)"
+		:start-page="flipStartPage"
 		:pages="lowResImages as string[]"
 		:pages-hi-res="hiResImages as string[]"
 	>
@@ -319,11 +477,14 @@ const onboarding = useVOnboarding(wrapper);
 			<!-- FIND PAGE BUTTON -->
 			<div class="flex flex-row gap-4 relative">
 				<md-outlined-button
-					@click="showGoToMenu()"
+					@click="
+						searchDialog.show();
+						searchField.focus();
+					"
 					id="findAPageBtn"
 					class="transition-transform duration-200"
 				>
-					Find a Page
+					Search
 					<IconSearchRounded slot="icon" />
 				</md-outlined-button>
 				<md-menu positioning="popover" id="findAPageMenu" anchor="findAPageBtn">
@@ -353,26 +514,47 @@ const onboarding = useVOnboarding(wrapper);
 		<md-dialog id="artistDialog">
 			<div slot="headline">Artists & Writers</div>
 		</md-dialog>
-		<Transition>
-			<md-fab
-				v-if="currentPageData!.data.display.includes('pageJump')"
-				label="Jump to Page..."
-				variant="tertiary"
-				size="large"
-				class="right-6 bottom-24 absolute z-50"
-			>
-				<IconBookRounded slot="icon" />
-			</md-fab>
-		</Transition>
+		<md-dialog id="searchDialog">
+			<div slot="headline" class="">
+				<h1 class="hidden">Search</h1>
+				<md-outlined-text-field
+					label="Search"
+					type="search"
+					id="search"
+					autocomplete="off"
+					@input.passive="
+						updateSearchString();
+						console.log(searchResults);
+					"
+				>
+				</md-outlined-text-field>
+			</div>
+			<md-list slot="content">
+				<md-list-item v-for="result in searchResults" type="link" class="rounded-lg">
+					<div slot="headline">
+						{{ result.res.frontmatter.name ?? result.res.frontmatter.title }}
+					</div>
+					<div slot="supporting-text">
+						<Highlighter
+							v-if="result.just"
+							:text-to-highlight="result.just?.text"
+							:search-words="result.just?.bold ?? []"
+						/>
+					</div>
+				</md-list-item>
+			</md-list>
+			<!-- <span v-if="searchResults.length == 0" class="text-center">Type to start searching.</span> -->
+		</md-dialog>
+		<Transition> </Transition>
 		<md-snackbar id="findAPageSnackbar" timeout="5000" class="absolute right-6 bottom-24 z-100">
 			<span class="flex flex-row items-center gap-2">
 				Click the
 				<md-filled-tonal-button
-					@click="showGoToMenu()"
+					@click="searchDialog.show()"
 					id="findAPageSnackbarBtn"
 					class="transition-transform duration-200"
 				>
-					Find a Page
+					Search
 					<IconSearchRounded slot="icon" />
 				</md-filled-tonal-button>
 				button below to navigate to a specific page.
@@ -394,17 +576,35 @@ const onboarding = useVOnboarding(wrapper);
 		width: 100%;
 		height: 100%;
 	}
+	.viewport {
+		border-radius: 8px;
+		div:not(.click-to-flip):has(img:nth-of-type(2)) {
+			img:nth-of-type(1) {
+				mask-image: linear-gradient(
+					90deg,
+					rgba(255, 255, 255, 1) 96%,
+					rgba(255, 255, 255, 0.78) 98%,
+					rgba(255, 255, 255, 0.5) 100%
+				);
+			}
+			img:nth-of-type(2) {
+				mask-image: linear-gradient(
+					270deg,
+					rgba(255, 255, 255, 1) 96%,
+					rgba(255, 255, 255, 0.78) 98%,
+					rgba(255, 255, 255, 0.5) 100%
+				);
+			}
+		}
+	}
 	/* .viewport.zoom img {
 		pointer-events: all !important;
 	} */
-	color: var(--md-sys-color-on-surface);
-	--md-dialog-container-color: var(--md-sys-color-surface-variant);
-	--md-sys-color-surface-container: var(--md-sys-color-surface-variant);
-}
-</style>
 
-<style v-if="screen.width < 400">
-.flipbook .viewport {
-	/* transform: scale(0.5); */
+	color: var(--md-sys-color-on-surface);
+	--md-dialog-container-color: var(--md-sys-color-surface);
+	--md-sys-color-surface-container: var(--md-sys-color-surface);
+	--md-outlined-text-field-container-color: var(--md-sys-color-surface);
+	--md-outlined-text-field-container-shape: 20px;
 }
 </style>

@@ -1,0 +1,29 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import './preflight-fixed.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@plugin 'tailwind-clamp';
+
+/* @config "../../tailwind.config.mjs"; */
+
+@theme {
+	--color-lmp-100: #c4abc1;
+	--color-lmp-900: #4f345a;
+	--color-lmr: #4c1a22;
+	--color-lmg-100: #afd987;
+	--color-lmg-900: #0f432d;
+	--color-ybk-blue: #4fc6f4;
+	--color-ybk-pink: #f68aca;
+	
+	--color-lmb-900: #915956;
+	--color-lmb-100: #f2dcc2;
+	
+	
+	--font-serif: 'Young Serif', serif;
+	--font-serif-2025: 'Lora', serif;
+
+	--font-slab: 'Rokkitt', serif;
+	--font-sans: 'Figtree', 'Helvetica', sans-serif;
+	--aspect-paper: 2.977 / 4;
+	--aspect-2025: 6 / 9;
+}

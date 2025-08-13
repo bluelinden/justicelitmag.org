@@ -53,7 +53,6 @@ const spreads2025 = defineCollection({
 
 export const works2025Schema = z.object({
 	title: z.string(),
-	description: z.string().optional(),
 	authors: z.optional(z.array(reference('authors2025')))
 });
 

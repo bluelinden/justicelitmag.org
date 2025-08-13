@@ -2,10 +2,12 @@
 import { ClientRouter } from 'astro:transitions';
 import { SEO } from 'astro-seo';
 import '@fontsource/figtree';
-// import '@fontsource/figtree/900'
+import '@fontsource/figtree/800';
+
 import '@fontsource/rokkitt';
 import '@fontsource/young-serif';
-import "../styles/global.css";
+import '@fontsource/lora/700';
+import '../styles/global.css';
 
 interface Props {
 	title: string;
@@ -16,7 +18,7 @@ const { title, slug } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="min-h-screen bg-[#222] font-serif text-[#eee] max-w-screen mr-0">
+<html lang="en" class="min-h-screen bg-[#222] font-serif text-[#eee] min-w-screen m-0 p-0">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
@@ -49,7 +51,7 @@ const { title, slug } = Astro.props;
 			}}
 		/>
 	</head>
-	<body class="min-h-screen transition-colors duration-500" transition:animate="fade" }>
+	<body class="min-h-screen transition-colors duration-500 m-0 p-0" transition:animate="fade" }>
 		<slot />
 	</body>
 </html>

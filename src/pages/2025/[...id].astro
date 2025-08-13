@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import FlipUi from '../../layouts/FlipUi.astro';
+import ImgPage from '../../layouts/ImgPage.astro';
+import TextPage from '../../layouts/TextPage.astro';
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+	const blogEntries = await getCollection('spreads2025');
+	return blogEntries.map((entry) => ({
+		params: { id: entry.id },
+		props: { entry }
+	}));
+}
+
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<FlipUi
+	title={entry.data.title}
+	number={entry.data.numL ?? entry.data.numR ?? -32}
+	description={entry.data.description}
+	downloadLink="/pdfs/2024/litmag-2024a-refresh-compressed.pdf"
+	slug={entry.id}
+>
+	<!-- {
+		entry.data.img ? (
+			<ImgPage img={entry.data.img} />
+		) : (
+			<TextPage>
+				<Content />
+			</TextPage>
+		)
+	} -->
+</FlipUi>

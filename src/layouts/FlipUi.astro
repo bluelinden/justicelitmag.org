@@ -1,30 +1,36 @@
 ---
-const { title, number, next, prev, slug, downloadLink, description, authors, showCredits } =
+const { title, number, slug } =
 	Astro.props;
 import { getEntries } from 'astro:content';
-import CondLink from '../components/CondButton.astro';
 import Layout from './Layout2025.astro';
 
 import Reader from '../components/Reader.vue';
 import { getCollection } from 'astro:content';
 import '@nmathar/flipbook-vue3/dist/style.css';
 
-const authorsData = (await getEntries(authors ?? [])) ?? [];
+const pages = (await getCollection('spreads2025')).entries().toArray();
+const authors = (await getCollection('authors2025')).entries().toArray();
+const works = (await getCollection('works2025')).entries().toArray();
 
 // console.log(prev, next)
 ---
 
 <Layout {slug} {title}>
 	<div
-		class="flex h-screen w-full flex-col gap-8 lg:flex-row p-4 bg-(--md-sys-color-surface) font-sans"
+		class="flex h-screen w-screen flex-col gap-8 lg:flex-row p-4 bg-(--md-sys-color-surface) font-sans m-0"
 	>
 		<article class="imgcont w-full h-full">
 			<Reader
-				pages={(await getCollection('spreads2025')).entries().toArray() as any}
+				pages={pages as any}
+				authors={authors as any}
+				works={works as any}
 				currentPage={number}
 				dev={import.meta.env.DEV}
 				client:load
 			/>
+			<noscript>
+				<h1>We're sorry, but this website requires JavaScript to function properly.</h1>
+			</noscript>
 		</article>
 		<!-- <noscript>
 			<nav class="flex flex-col gap-2 lg:w-96">
@@ -107,6 +113,8 @@ const authorsData = (await getEntries(authors ?? [])) ?? [];
 	}
 	:root {
 		--md-ref-typeface-brand: 'Figtree';
-		--md-ref-typeface-plain: 'Figtree';
+		--md-ref-typeface-plain:
+			-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+			'Helvetica Neue', sans-serif;
 	}
 </style>
