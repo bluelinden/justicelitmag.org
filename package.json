@@ -38,7 +38,7 @@
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@vueuse/core": "^13.3.0",
-    "astro": "5.1.8",
+    "astro": "5.16.4",
     "astro-collection-search": "github:bluelinden/astro-collection-search",
     "astro-seo": "^0.8.4",
     "astro-show-tailwindcss-breakpoint": "^1.0.9",
