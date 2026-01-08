@@ -15,20 +15,37 @@ import {
 	IconRemoveRounded,
 	IconBuildRounded,
 	IconSearchRounded,
+	IconInfoRounded,
+	IconHomeRounded,
 	IconBookRounded
+	// @ts-expect-error
 } from '@iconify-prerendered/vue-material-symbols';
 import { MdDialog } from '@material/web/dialog/dialog.js';
 import 'v-onboarding/dist/style.css';
-import '@material/web/all.js';
-import '@maicol07/material-web-additions/snackbar/snackbar.js';
+// import '@material/web/all.js';
+import '@material/web/common.js';
+import '@material/web/button/filled-button.js';
+import '@material/web/button/filled-tonal-button.js';
+import '@material/web/button/text-button.js';
+import '@material/web/button/outlined-button.js';
+// import '@material/web/field/outlined-field.js';
+import '@material/web/iconbutton/icon-button.js';
+import '@material/web/iconbutton/filled-icon-button.js';
+import '@material/web/iconbutton/filled-tonal-icon-button.js';
+import '@material/web/iconbutton/outlined-icon-button.js';
+import '@material/web/list/list.js';
+import '@material/web/list/list-item.js';
+import '@material/web/textfield/outlined-text-field.js';
 
-import { Search, type CollectionSearchResult } from 'astro-collection-search/self';
+// import '@maicol07/material-web-additions/snackbar/snackbar.js';
 
-import Highlighter from 'vue-highlight-words';
+// import { Search, type CollectionSearchResult } from 'astro-collection-search/self';
 
-import MagSettings from '../../content/settings2025.yaml';
+// import Highlighter from 'vue-highlight-words';
 
-import { computedAsync } from '@vueuse/core';
+// import MagSettings from '../../content/settings2025.yaml';
+
+// import { computedAsync } from '@vueuse/core';
 
 const props = defineProps<{
 	currentPage: number;
@@ -242,20 +259,36 @@ onMounted(async () => {
 			});
 		}, 300);
 	artistDialog = document.getElementById('artistDialog') as MdDialog;
+	websiteDialog = document.getElementById('websiteDialog') as MdDialog;
 	searchDialog = document.getElementById('searchDialog') as MdDialog;
-	searchField = document.getElementById('search') as any;
-	searchResults = computedAsync(async () => {
-		console.log('val', searchString.value);
-		const results = (await Search(searchString.value)).map((res) => {
-			console.log('result', res);
-			return {
-				res,
-				just: getJustificationForSearchResult(res)
-			};
-		});
-		console.log('results', results);
-		return results;
-	}) as any;
+	searchField = document.getElementById('goto') as any;
+	searchFieldSm = document.getElementById('goto-sm') as any;
+
+	// searchButton = document.getElementById('gotobtn') as any;
+	// searchResults = computedAsync(async () => {
+	// 	console.log('val', searchString.value);
+	// 	const results = (await Search(searchString.value)).map((res) => {
+	// 		console.log('result', res);
+	// 		return {
+	// 			res,
+	// 			just: getJustificationForSearchResult(res)
+	// 		};
+	// 	});
+	// 	console.log('results', results);
+	// 	return results;
+	// }) as any;
+	// Make sure this code gets executed after the DOM is loaded.
+	document.getElementById('goto')!.addEventListener('keyup', (event) => {
+		if (event.key !== 'Enter') return; // Use `.key` instead.
+		goToSearchedPage();
+		event.preventDefault(); // No need to `return false;`.
+	});
+	document.getElementById('goto-sm')!.addEventListener('keyup', (event) => {
+		if (event.key !== 'Enter') return; // Use `.key` instead.
+		goToSearchedPageSm();
+		event.preventDefault(); // No need to `return false;`.
+	});
+	worksForCurrentPage.value = getWorksForCurrentPage()!;
 	console.timeEnd('mount');
 });
 
@@ -263,6 +296,7 @@ async function pageTurnCallback(flipNum: number) {
 	console.time('pageturn');
 
 	const pageNum = flipNumToPageNum(flipNum);
+	console.log(flipNum, pageNum);
 	currentPage.value = pageNum;
 
 	// console.info('PUSHED STATE');
@@ -272,6 +306,7 @@ async function pageTurnCallback(flipNum: number) {
 			dark: isDark.value
 		});
 	})();
+	worksForCurrentPage.value = getWorksForCurrentPage()!;
 
 	window.history.pushState(
 		{
@@ -280,19 +315,24 @@ async function pageTurnCallback(flipNum: number) {
 		'',
 		`/2025/${slug}`
 	);
+
 	console.timeEnd('pageturn');
 }
 
 function getWorksForCurrentPage() {
 	console.time('getworks');
 	const works = currentPageData.value?.data.works;
-	if (!works) return;
+	if (!works) {
+		console.info('no works found');
+		return;
+	}
 	const foundWorks = works.map((neededWork) => {
 		const foundWork = allWorks.find((foundWork) => {
 			return neededWork.id === foundWork.id;
 		});
 		if (foundWork) {
 			console.timeEnd('getworks');
+			foundWork.data.authors = getArtistsForWork(foundWork);
 			return foundWork;
 		}
 	});
@@ -303,36 +343,31 @@ function getWorksForCurrentPage() {
 		})
 	) {
 		console.timeEnd('getworks');
+		console.info(foundWorks);
 		return foundWorks;
 	}
 }
 
-function getArtistsForWork() {
+function getArtistsForWork(work: (typeof props.works)[0][1]) {
 	console.time('getartists');
-	const artists = currentPageData.value?.data.works;
-	if (!artists) return;
-	const foundArtists = artists.map((neededWork) => {
-		const foundArtist = artists.find((foundWork) => {
-			return neededWork.id === foundWork.id;
-		});
-		if (foundArtist) {
-			console.timeEnd('getworks');
-			return foundArtist;
-		}
-	});
-	if (
-		foundArtists.every((workToBeTested) => {
-			console.timeEnd('getworks');
-			return !!workToBeTested;
+	const artists = work.data.authors;
+	if (!artists) return [];
+	const foundArtists = artists
+		.map((neededArtist) => {
+			return (
+				props.authors.find((foundArtist) => {
+					return neededArtist.id === foundArtist[1].id;
+				})![1] || undefined
+			);
 		})
-	) {
-		console.timeEnd('getartists');
-		return foundArtists;
-	}
+		.filter((artist) => !!artist);
+	console.timeEnd('getartists');
+	return foundArtists;
 }
 
 let artistDialog: MdDialog;
 let searchDialog: MdDialog;
+let websiteDialog: MdDialog;
 const zoomLevel = ref(1);
 
 function updateZoomLevel(lev: number) {
@@ -344,67 +379,89 @@ function showTableOfContents() {
 	pageTurnCallback(2);
 }
 
-watch(currentPage, (newValue, oldValue) => {
-	if ((oldValue === 0 || oldValue === 1) && newValue !== 0 && newValue !== 1) {
-		// @ts-expect-error
-		document.getElementById('findAPageSnackbar').show();
-	} else {
-		// console.info(`snackbar skipped, nv ${newValue} ov ${oldValue}`);
-	}
-});
+// watch(currentPage, (newValue, oldValue) => {
+// 	if ((oldValue === 0 || oldValue === 1) && newValue !== 0 && newValue !== 1) {
+// 		// @ts-expect-error
+// 		// document.getElementById('findAPageSnackbar').show();
+// 	} else {
+// 		// console.info(`snackbar skipped, nv ${newValue} ov ${oldValue}`);
+// 	}
+// });
 
-const flipStartPage = pageNumToFlipNum(targetPage.value);
+const flipStartPage = computed(() => pageNumToFlipNum(targetPage.value));
 
-let searchField: HTMLElement;
+let searchField: HTMLInputElement;
+let searchFieldSm: HTMLInputElement;
 
-function updateSearchString() {
-	// @ts-expect-error
-	searchString.value = searchField.value;
+// // let searchButton: HTMLElement;
+
+// function updateSearchString() {
+// 	searchString.value = searchField.value;
+// }
+
+// function filenameToSlug(fname: string) {
+// 	return fname.split('.')[0];
+// }
+
+const worksForCurrentPage = ref([] as (typeof props.works)[0][1][]);
+
+// const searchString = ref('');
+
+// export type Result = {
+// 	res: CollectionSearchResult;
+// 	just: ReturnType<typeof getJustificationForSearchResult>;
+// };
+// let searchResults: ComputedRef<Result[]>;
+
+// function getPageForSearchResult(res: CollectionSearchResult) {}
+// function getJustificationForSearchResult(res: CollectionSearchResult) {
+// 	console.log('just4', res);
+// 	const matchRzns = Object.values(res.match).flat();
+// 	console.log('matchrzns', res.queryTerms, matchRzns);
+
+// 	if (
+// 		matchRzns.includes('numL') ||
+// 		matchRzns.includes('numR') ||
+// 		matchRzns.includes('name') ||
+// 		matchRzns.includes('title')
+// 	) {
+// 		console.log('nojust');
+
+// 		return;
+// 	} else if (matchRzns.includes('body')) {
+// 		console.log('body', res);
+
+// 		// console.time('just');
+// 		const just = {
+// 			bold: Object.keys(res.match),
+// 			text: getPageBySlug(filenameToSlug(res.filename))!.body!
+// 		};
+// 		// console.timeEnd('just');
+
+// 		console.log('just', just);
+// 		return just;
+// 	} else {
+// 		console.log('nojust', res);
+// 		return;
+// 	}
+// }
+
+// console.log(lowResImages);
+
+function goToSearchedPage() {
+	currentPage.value = parseInt(searchField.value);
+	targetPage.value = parseInt(searchField.value);
+}
+function goToSearchedPageSm() {
+	currentPage.value = parseInt(searchFieldSm.value);
+	targetPage.value = parseInt(searchFieldSm.value);
 }
 
-function filenameToSlug(fname: string) {
-	return fname.split('.')[0];
-}
-
-const searchString = ref('');
-
-export type Result = {
-	res: CollectionSearchResult;
-	just: ReturnType<typeof getJustificationForSearchResult>;
-};
-let searchResults: ComputedRef<Result[]>;
-
-function getPageForSearchResult(res: CollectionSearchResult) {}
-function getJustificationForSearchResult(res: CollectionSearchResult) {
-	console.log('just4', res);
-	const matchRzns = Object.values(res.match).flat();
-	console.log('matchrzns', res.queryTerms, matchRzns);
-
-	if (
-		matchRzns.includes('numL') ||
-		matchRzns.includes('numR') ||
-		matchRzns.includes('name') ||
-		matchRzns.includes('title')
-	) {
-		console.log('nojust');
-
-		return;
-	} else if (matchRzns.includes('body')) {
-		console.log('body', res);
-
-		// console.time('just');
-		const just = {
-			bold: Object.keys(res.match),
-			text: getPageBySlug(filenameToSlug(res.filename))!.body!
-		};
-		// console.timeEnd('just');
-
-		console.log('just', just);
-		return just;
-	} else {
-		console.log('nojust', res);
-		return;
-	}
+function makeString(arr: string[]) {
+	if (arr.length === 1) return arr[0];
+	const firsts = arr.slice(0, arr.length - 1);
+	const last = arr[arr.length - 1];
+	return firsts.join(', ') + ' and ' + last;
 }
 </script>
 
@@ -423,22 +480,82 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 		:pages="lowResImages as string[]"
 		:pages-hi-res="hiResImages as string[]"
 	>
-		<nav class="p-2 flex flex-row gap-2 justify-between mt-4" id="nav">
-			<div class="flex flex-row gap-4">
+		<nav class="p-2 flex flex-col xl:flex-row gap-6 xl:gap-2 justify-between mt-4" id="nav">
+			<div class="flex-row gap-4 items-center hidden xl:flex">
 				<md-filled-tonal-button
 					@click="flipbook.flipLeft"
 					:disabled="!flipbook.canFlipLeft && flipbook.canFlipRight"
+					class="text-sm"
 				>
 					Previous Page
 					<IconArrowBackRounded slot="icon" />
 				</md-filled-tonal-button>
+
 				<md-text-button @click="artistDialog.show()" class="transition-transform duration-200">
-					View Artists
+					Artists and Info
 					<IconGroupRounded slot="icon" />
 				</md-text-button>
+				<md-icon-button href="/" class="transition-transform duration-200">
+					<IconHomeRounded />
+				</md-icon-button>
 			</div>
 
-			<div class="flex flex-row gap-4 align-center transition-all duration-200 ease-in-out">
+			<!-- Small displays -->
+			<div class="flex flex-row xl:hidden w-full">
+				<md-icon-button class="transition-transform duration-200" href="/">
+					<IconHomeRounded />
+				</md-icon-button>
+				<span
+					class="my-auto text-3xl font-extrabold transition-[width] duration-200 flex flex-row gap-2 xl:hidden mx-auto"
+				>
+					<IconBuildRounded v-if="props.dev" />
+
+					{{ currentPageData?.data.title }}
+				</span>
+				<md-outlined-icon-button
+					@click="artistDialog.show()"
+					class="transition-transform duration-200"
+				>
+					<IconInfoRounded />
+				</md-outlined-icon-button>
+			</div>
+			<div class="flex-row gap-4 items-center flex xl:hidden w-full justify-between">
+				<md-filled-tonal-icon-button
+					class="flex xl:hidden"
+					@click="flipbook.flipLeft"
+					:disabled="!flipbook.canFlipLeft && flipbook.canFlipRight"
+				>
+					<IconArrowBackRounded />
+				</md-filled-tonal-icon-button>
+				<md-outlined-text-field
+					placeholder="Go to..."
+					type="number"
+					min="0"
+					max="33"
+					class="w-36"
+					id="goto-sm"
+					no-spinner
+					@submit="goToSearchedPageSm()"
+					><md-filled-icon-button
+						slot="trailing-icon"
+						class="mr-2 absolute"
+						id="gotobtn-sm"
+						@click="goToSearchedPageSm()"
+					>
+						<IconSearchRounded /> </md-filled-icon-button
+				></md-outlined-text-field>
+				<md-filled-icon-button
+					class="flex xl:hidden"
+					@click="flipbook.flipRight"
+					:disabled="flipbook.canFlipLeft && !flipbook.canFlipRight"
+				>
+					<IconArrowForwardRounded />
+				</md-filled-icon-button>
+			</div>
+
+			<div
+				class="flex-row gap-4 align-center transition-all duration-200 ease-in-out hidden xl:flex"
+			>
 				<span
 					class="my-auto text-3xl font-extrabold mx-4 transition-[width] duration-200 flex flex-row gap-2"
 				>
@@ -448,7 +565,7 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 				</span>
 
 				<!-- ZOOM OUT BUTTON -->
-				<div class="ml-4 flex flex-row gap-4">
+				<div class="ml-4 flex-row gap-4 items-center flex">
 					<md-filled-tonal-icon-button
 						@click="flipbook.zoomOut()"
 						class="transition-transform duration-200"
@@ -475,8 +592,8 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 			</div>
 
 			<!-- FIND PAGE BUTTON -->
-			<div class="flex flex-row gap-4 relative">
-				<md-outlined-button
+			<div class="flex-row gap-4 relative items-center hidden xl:flex">
+				<!-- <md-outlined-button
 					@click="
 						searchDialog.show();
 						searchField.focus();
@@ -484,7 +601,7 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 					id="findAPageBtn"
 					class="transition-transform duration-200"
 				>
-					Search
+					Go to Page
 					<IconSearchRounded slot="icon" />
 				</md-outlined-button>
 				<md-menu positioning="popover" id="findAPageMenu" anchor="findAPageBtn">
@@ -497,8 +614,24 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 					<md-menu-item @click="showTableOfContents">
 						<div slot="headline">Table of Contents</div>
 					</md-menu-item>
-				</md-menu>
-
+				</md-menu> -->
+				<md-outlined-text-field
+					placeholder="Go to page..."
+					type="number"
+					min="0"
+					max="33"
+					class="w-46"
+					id="goto"
+					no-spinner
+					@submit="goToSearchedPage()"
+					><md-filled-icon-button
+						slot="trailing-icon"
+						class="mr-2 absolute"
+						id="gotobtn"
+						@click="goToSearchedPage()"
+					>
+						<IconSearchRounded /> </md-filled-icon-button
+				></md-outlined-text-field>
 				<!-- NEXT PAGE BUTTON -->
 				<md-filled-button
 					@click="flipbook.flipRight"
@@ -513,8 +646,54 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 		</nav>
 		<md-dialog id="artistDialog">
 			<div slot="headline">Artists & Writers</div>
+			<div slot="content">
+				<md-list>
+					<md-list-item v-for="work in worksForCurrentPage">
+						<h1 slot="headline">
+							{{ work.data.title }}
+							<div v-if="work.data.authors!.length !== 0" class="opacity-60">
+								by {{ makeString(work.data.authors!.map((author) => author.data.name)) }}
+							</div>
+						</h1>
+
+						<p slot="supporting-text" v-if="work.body">{{ work.body }}</p>
+					</md-list-item>
+					<md-list-item type="link">
+						<div
+							slot="headline"
+							class="opacity-60"
+							@click="
+								artistDialog.close();
+								websiteDialog.show();
+							"
+						>
+							Website credits
+						</div>
+						<IconInfoRounded slot="end" />
+					</md-list-item>
+				</md-list>
+			</div>
 		</md-dialog>
-		<md-dialog id="searchDialog">
+		<md-dialog id="websiteDialog" class="max-w-50">
+			<div slot="headline">About this website</div>
+			<div slot="content">
+				<p>This website was made using <b>*MagDrop</b>, a blue linden product.</p>
+				<p>
+					Design and code for the 2025 Literary Magazine were created using absolutely no generative
+					AI.
+				</p>
+				<p>
+					The entirety of the code written for this website is open source on Github at
+					<a href="https://github.com/bluelinden/new-litmag-website" class="underline"
+						>bluelinden/new-litmag-website</a
+					>. The magazine itself and all of its assets are owned entirely by the Justice Lit Mag and
+					all rights are reserved.
+				</p>
+				<p>Special thanks to <a href="https://github.com/nmathar/flipbook-vue3" class="underline">NMathar on GitHub</a> for the page-flipping effect that this entire website is built around.</p>
+				<img src="/imgs/2025/magdrop-exp.svg" />
+			</div>
+		</md-dialog>
+		<!-- <md-dialog id="searchDialog">
 			<div slot="headline" class="">
 				<h1 class="hidden">Search</h1>
 				<md-outlined-text-field
@@ -543,10 +722,10 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 					</div>
 				</md-list-item>
 			</md-list>
-			<!-- <span v-if="searchResults.length == 0" class="text-center">Type to start searching.</span> -->
-		</md-dialog>
-		<Transition> </Transition>
-		<md-snackbar id="findAPageSnackbar" timeout="5000" class="absolute right-6 bottom-24 z-100">
+			<!-- <span v-if="searchResults.length == 0" class="text-center">Type to start searching.</span>
+		</md-dialog> -->
+		<!-- <Transition> </Transition> -->
+		<!-- <md-snackbar id="findAPageSnackbar" timeout="5000" class="absolute right-6 bottom-24 z-100">
 			<span class="flex flex-row items-center gap-2">
 				Click the
 				<md-filled-tonal-button
@@ -559,7 +738,7 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 				</md-filled-tonal-button>
 				button below to navigate to a specific page.
 			</span>
-		</md-snackbar>
+		</md-snackbar> -->
 	</Flipbook>
 </template>
 
@@ -597,6 +776,12 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 			}
 		}
 	}
+
+	ul {
+		list-style-type: none; /* Remove bullets */
+		padding: 0; /* Remove padding */
+		margin: 0; /* Remove margins */
+	}
 	/* .viewport.zoom img {
 		pointer-events: all !important;
 	} */
@@ -605,6 +790,8 @@ function getJustificationForSearchResult(res: CollectionSearchResult) {
 	--md-dialog-container-color: var(--md-sys-color-surface);
 	--md-sys-color-surface-container: var(--md-sys-color-surface);
 	--md-outlined-text-field-container-color: var(--md-sys-color-surface);
+	--md-icon-button-icon-color: var(--md-sys-color-primary);
+
 	--md-outlined-text-field-container-shape: 20px;
 }
 </style>

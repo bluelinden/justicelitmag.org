@@ -37,7 +37,6 @@ export const spreads2025Schema = z.object({
 	numL: z.number().optional(),
 	numR: z.number().optional(),
 	// }),
-	description: z.string().optional(),
 	// images: z.object({
 	imgL: z.string().optional(),
 	imgR: z.string().optional(),
@@ -53,7 +52,7 @@ const spreads2025 = defineCollection({
 
 export const works2025Schema = z.object({
 	title: z.string(),
-	authors: z.optional(z.array(reference('authors2025')))
+	authors: z.optional(z.array(reference('authors2025'))),
 });
 
 const works2025 = defineCollection({

@@ -4,42 +4,53 @@ import Layout from '../layouts/Layout2025.astro';
 
 <Layout title="The Justice Lit Mag">
 	<main
-		class="h-screen w-screen grid grid-cols-3 grid-rows-4 gap-8 p-8 overflow-hidden relative *:rounded-2xl bg-black"
+		class="xl:h-screen min-h-screen w-screen grid grid-cols-3 grid-rows-4 gap-8 p-8 overflow-hidden relative *:rounded-2xl bg-black"
 	>
 		<h1
-			class="clamp-[text,8xl,9xl,xl,2xl] m-0 col-start-1 col-end-5 xl:col-end-3 font-sans font-black px-14 text-shadow-[0_0_60px_#000] z-20"
+			class="clamp-[text,3xl,9xl,xl,2xl] m-0 col-start-1 col-end-5 xl:col-end-3 row-end-3 row-start-1 xl:row-end-2 font-sans font-black px-6 lg:px-14 text-shadow-[0_0_60px_#000] z-20 h-max"
 		>
 			The Justice Literature, Photography and Arts Magazine
 		</h1>
 		<a
+			id="submit"
+			class="col-start-1 xl:col-start-1 xl:col-end-3 col-end-5 row-start-2 xl:row-start-2 row-end-3 xl:row-end-5 overflow-hidden relative content-end"
+			href="https://docs.google.com/forms/d/e/1FAIpQLScdaoOLA-JVDHXAyIUJCGKvJJr9vAMn6jZXO5x-V6UqbS2hhA/viewform?usp=header"
+		>
+			<img class="w-full absolute top-0 filter brightness-80" src="/seo/2026-submit-sizzle.png" />
+			<!-- text-shadow-[0_0_60px_rgb(255_255_255_/_1)] -->
+			<div class="mt-auto font-sans font-black p-6 lg:p-16 z-30 relative">
+				<h2 class="clamp-[text,6xl,9xl,lg,2xl] m-0 text-shadow-[0_0_90px_#000]">Submit</h2>
+			</div>
+		</a>
+		<a
 			id="2025"
-			class="col-start-1 xl:col-end-3 col-end-5 row-start-2 row-end-4 xl:row-end-5 overflow-hidden relative content-end"
+			class="col-start-1 xl:col-start-3 xl:col-end-5 col-end-5 row-start-3 xl:row-start-1 row-end-3 xl:row-end-3 overflow-hidden relative content-end"
 			href="2025/cover"
 		>
 			<img class="w-full absolute top-0 filter brightness-80" src="/seo/2025-sizzle.png" />
 			<!-- text-shadow-[0_0_60px_rgb(255_255_255_/_1)] -->
-			<div class="mt-auto font-sans font-black p-16 z-30 relative">
-				<h2 class="clamp-[text,8xl,9xl,xl,2xl] m-0 text-shadow-[0_0_90px_#000]">2025</h2>
+			<div class="mt-auto font-sans font-black p-6 lg:p-16 z-30 relative">
+				<h2 class="clamp-[text,6xl,9xl,lg,2xl] m-0 text-shadow-[0_0_90px_#000]">2025</h2>
 			</div>
 		</a>
 		<a
 			id="2024"
-			class="col-start-1 xl:col-start-3 col-end-5 row-start-4 xl:row-start-1 row-end-5 overflow-hidden relative content-end"
+			class="col-start-1 xl:col-start-3 col-end-5 row-start-4 xl:row-start-3 row-end-5 overflow-hidden relative content-end"
 			href="2024/cover"
 		>
 			<img
-				class="max-xl:w-full xl:h-full filter brightness-75 absolute top-0"
+				class="w-full xl:h-full filter brightness-75 absolute top-0"
 				src="/seo/2024-sizzle.png"
 			/>
-			<div class="mt-auto p-16 font-sans font-black z-30 relative">
-				<h2 class="clamp-[text,8xl,9xl,xl,2xl] m-0 text-shadow-[0_0_90px_#000]">2024</h2>
+			<div class="mt-auto p-6 lg:p-16 font-sans font-black z-30 relative">
+				<h2 class="clamp-[text,6xl,9xl,lg,2xl] m-0 text-shadow-[0_0_90px_#000]">2024</h2>
 			</div>
 		</a>
 	</main>
 </Layout>
 
 <style>
-	a:hover h2 {
+	a:hover h2, #submit h2 {
 		text-decoration: underline;
 		text-underline-offset: 1rem;
 		text-decoration-thickness: 0.8rem;
