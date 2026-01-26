@@ -65,7 +65,7 @@
     "tailwind-clamp": "^4.0.13",
     "tailwindcss": "^4.1.7",
     "tailwindcss-image-rendering": "^1.0.2",
-    "wrangler": "^3.114.8"
+    "wrangler": "^3.114.17"
   },
   "trustedDependencies": [
     "core-js",
